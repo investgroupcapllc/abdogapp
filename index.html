@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Diario Canino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: cálido, cariñoso, ordenado — la libreta de vida de cada perro
+   IDEA: el carnet veterinario de cada perro, con diario adjunto
+   PICTURE: portada con la foto del perro en un sello circular y sus datos vitales
+   COLOUR and TYPE: índigo profundo dominante, rosa collar de apoyo, amarillo acento; Fredoka + Nunito
+   LAYOUT: portada a todo ancho, registro rápido, historia + panel lateral, vacunas, fotos */
+:root{color-scheme:light dark;
+--bg:light-dark(#ffffff,#12142b);--ink:light-dark(#17193a,#eef0ff);--soft:light-dark(#5b5f86,#a9add6);
+--card:light-dark(#f4f4fb,#1c1f3d);--line:light-dark(#e2e3f0,#2c3058);
+--ind:#2f3fa0;--ind2:#24318a;--pink:#ff8fb1;--yel:#ffd23f}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Nunito,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Fredoka,Nunito,sans-serif;font-weight:600;margin:0;line-height:1.1;text-wrap:balance}
+button,input,select,textarea{font:inherit;font-size:16px;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto}
+.band{padding:clamp(24px,4vw,56px) max(5vw,16px)}
+.hero{background:linear-gradient(160deg,var(--ind),var(--ind2));color:#fff;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-80px;bottom:-120px;width:360px;height:360px;border-radius:50%;background:rgba(255,143,177,.18)}
+.hgrid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center;position:relative;z-index:1}
+.seal{width:clamp(150px,22vw,230px);aspect-ratio:1;border-radius:50%;border:6px solid var(--pink);background:#3a4bb5;overflow:hidden;display:grid;place-items:center;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.seal img{width:100%;height:100%;object-fit:cover}
+.hero h1{font-size:clamp(40px,7vw,64px)}
+.sub{color:#dfe3ff;font-size:17px;margin:6px 0 18px}
+.vitals{display:flex;flex-wrap:wrap;gap:10px}
+.vit{background:rgba(255,255,255,.12);border-radius:16px;padding:10px 14px}
+.vit b{display:block;font-family:Fredoka;font-weight:500;font-size:22px;white-space:nowrap}
+.vit span{font-size:13px;color:#d6dbff}
+.vit.hot{background:var(--yel);color:#2a2300}.vit.hot span{color:#5a4a00}
+.toprow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px;position:relative;z-index:1;flex-wrap:wrap}
+.tag{font-size:13px;background:rgba(255,255,255,.16);padding:6px 12px;border-radius:99px}
+.brand{font-family:Fredoka;font-weight:600;font-size:20px;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px}
+.btn{min-height:44px;border-radius:14px;border:0;padding:10px 16px;font-weight:700}
+.btn.light{background:#fff;color:var(--ind)}
+.btn.glass{background:rgba(255,255,255,.16);color:#fff}
+.btn.pri{background:var(--ind);color:#fff}
+.btn.ghost{background:transparent;border:2px solid var(--line)}
+.btn.danger{background:#d6336c;color:#fff}
+.btn:disabled{opacity:.6}
+.quick{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.qb{display:flex;align-items:center;gap:10px;min-height:56px;padding:10px 14px;border-radius:16px;border:2px solid var(--line);background:var(--bg);font-weight:700;text-align:left}
+.qb:hover{border-color:var(--ind)}
+.dot{flex:none;width:14px;height:14px;border-radius:50%}
+.main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px;align-items:start}
+.card{background:var(--card);border-radius:20px;padding:20px}
+.card h2{font-size:22px;margin-bottom:14px}
+.side{display:grid;gap:20px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
+.chip{flex:none;min-height:40px;padding:6px 14px;border-radius:99px;border:2px solid var(--line);background:var(--bg);font-weight:600;font-size:14px}
+.chip.on{background:var(--ind);border-color:var(--ind);color:#fff}
+.search{width:100%;min-height:44px;border-radius:14px;border:2px solid var(--line);background:var(--bg);padding:8px 14px;margin-bottom:14px}
+.month{font-family:Fredoka;font-weight:500;color:var(--soft);margin:18px 0 8px;font-size:15px;text-transform:capitalize}
+.ev{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;background:var(--bg);border-radius:16px;padding:12px 14px;margin-bottom:8px;border:1px solid var(--line)}
+.ev .day{font-family:Fredoka;font-size:22px;line-height:1;text-align:center;width:40px}
+.ev .day small{display:block;font-family:Nunito;font-size:12px;color:var(--soft)}
+.ev h3{font-size:17px;font-weight:500;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ev .k{font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;color:#fff}
+.ev p{margin:4px 0 0;color:var(--soft);font-size:15px;white-space:pre-wrap}
+.ev img{margin-top:8px;max-width:220px;width:100%;border-radius:12px;display:block}
+.ev .acts{display:flex;gap:4px}
+.ib{width:44px;height:44px;border-radius:12px;border:0;background:transparent;color:var(--soft)}
+.ib:hover{background:var(--card)}
+.up{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.up:last-child{border:0}
+.up .when{white-space:nowrap;font-weight:700}
+.late{color:#d6336c}.soon{color:#c78a00}
+.moods{display:grid;grid-template-columns:repeat(30,minmax(0,1fr));gap:3px}
+.moods i{aspect-ratio:1;border-radius:4px;background:var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:10px;font-size:13px;color:var(--soft)}
+.legend span{display:flex;align-items:center;gap:6px}
+.fig{position:relative;height:160px}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;margin:0;font-size:15px}
+dt{color:var(--soft)}dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.empty{text-align:center;color:var(--soft);padding:30px 10px}
+.note{font-size:13px;color:var(--soft);margin-top:10px}
+dialog{border:0;border-radius:22px;padding:0;width:min(560px,calc(100vw - 24px));background:var(--bg);color:var(--ink);box-shadow:0 30px 80px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(10,12,40,.55)}
+.dlg{padding:22px;display:grid;gap:14px;max-height:86vh;overflow:auto}
+.dlg h2{font-size:24px}
+label{display:grid;gap:6px;font-weight:600;font-size:14px}
+.f{width:100%;min-height:44px;border-radius:12px;border:2px solid var(--line);background:var(--card);padding:8px 12px}
+textarea.f{min-height:90px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.moodpick{display:flex;flex-wrap:wrap;gap:8px}
+.moodpick button{min-height:44px;padding:6px 14px;border-radius:99px;border:2px solid var(--line);background:var(--card);font-weight:700}
+.moodpick button.on{color:#fff}
+.dfoot{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;font-weight:700;opacity:0;transition:opacity .25s;pointer-events:none;z-index:9;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+.hide{display:none!important}
+.nav{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap;position:relative;z-index:1}
+.nav a{color:#fff;text-decoration:none;font-weight:700;padding:8px 14px;border-radius:99px;background:rgba(255,255,255,.14);min-height:40px;display:inline-flex;align-items:center}
+.nav a:hover{background:rgba(255,255,255,.26)}
+.shead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.shead h2{font-size:28px}
+.alt{background:var(--card)}
+table{width:100%;border-collapse:collapse;background:var(--bg);border-radius:16px;overflow:hidden}
+th{text-align:left;font-size:13px;color:var(--soft);font-weight:700;padding:12px 14px;border-bottom:2px solid var(--line)}
+td{padding:14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.n{font-family:Fredoka;font-size:20px;color:var(--ind);width:44px}
+td .t{font-weight:700}td .s{color:var(--soft);font-size:14px}
+.nw{white-space:nowrap}
+.vsum{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.vsum div{background:var(--bg);border-radius:14px;padding:10px 16px;border:1px solid var(--line)}
+.vsum b{font-family:Fredoka;font-weight:500;font-size:22px;display:block}
+.vsum span{font-size:13px;color:var(--soft)}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.ph{position:relative;border:0;padding:0;background:var(--card);border-radius:16px;overflow:hidden;text-align:left}
+.ph img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.ph figcaption{padding:10px 12px;font-size:14px}
+.ph figcaption b{display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ph figcaption span{color:var(--soft);font-size:13px}
+#dLight{width:min(980px,calc(100vw - 24px))}
+#dLight img{width:100%;max-height:72vh;object-fit:contain;background:#000;border-radius:14px}
+/* auth + list */
+.auth{min-height:100vh;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+.auth .hero{display:flex;flex-direction:column;justify-content:center;gap:18px}
+.auth .hero h1{font-size:clamp(40px,6vw,60px)}
+.auth .hero p{font-size:18px;color:#dfe3ff;max-width:34ch;margin:0}
+.bigpaw{width:clamp(120px,18vw,190px)}
+.authbox{display:grid;place-items:center;padding:clamp(24px,5vw,64px) 20px}
+.authbox form{width:min(400px,100%);display:grid;gap:14px}
+.tabs{display:flex;background:var(--card);border-radius:14px;padding:4px}
+.tabs button{flex:1;min-height:44px;border:0;border-radius:11px;background:transparent;font-weight:700}
+.tabs button.on{background:var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.linkbtn{background:none;border:0;color:var(--ind);font-weight:700;min-height:44px;padding:0}
+.dogs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.dog{display:grid;gap:12px;justify-items:center;text-align:center;padding:22px 16px;border-radius:22px;background:var(--card);border:2px solid transparent}
+.dog:hover{border-color:var(--ind)}
+.dog .av{width:120px;aspect-ratio:1;border-radius:50%;border:5px solid var(--pink);overflow:hidden;background:#3a4bb5;display:grid;place-items:center}
+.dog .av img{width:100%;height:100%;object-fit:cover}
+.dog h3{font-size:22px}.dog p{margin:0;color:var(--soft);font-size:14px}
+.dog.add{border:2px dashed var(--line);background:transparent;align-content:center;min-height:240px}
+.share{display:grid;gap:12px}
+.switch{display:flex;align-items:center;gap:12px;font-weight:700;cursor:pointer}
+.switch input{width:22px;height:22px;accent-color:var(--ind)}
+.copyrow{display:flex;gap:8px}.copyrow input{flex:1}
+.center{min-height:70vh;display:grid;place-items:center;text-align:center;padding:24px}
+@media(max-width:900px){.main{grid-template-columns:minmax(0,1fr)}.auth{grid-template-columns:minmax(0,1fr)}.auth .hero{min-height:auto}}
+@media(max-width:600px){.hgrid{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}.vitals{justify-content:center}.row2{grid-template-columns:1fr}.ev{grid-template-columns:auto minmax(0,1fr)}.ev .acts{grid-column:1/-1;justify-content:flex-end}.gal{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+table{font-size:14px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px}.stack td{display:flow-root;border:0;padding:3px 0;padding-inline-start:7em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:6.5em;margin-inline-start:-7em;color:var(--soft)}.stack td:empty{display:none}td.n{width:auto}}
+@media(prefers-reduced-motion:no-preference){.ev,.dog{animation:in .3s ease both}@keyframes in{from{opacity:0;transform:translateY(6px)}}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+
+<!-- ACCESO -->
+<div id="vAuth" class="auth hide">
+ <section class="hero band">
+  <svg class="bigpaw" viewBox="0 0 100 100" fill="#ff8fb1" aria-hidden="true"><ellipse cx="50" cy="66" rx="22" ry="18"/><ellipse cx="24" cy="42" rx="9" ry="12"/><ellipse cx="40" cy="26" rx="9" ry="12"/><ellipse cx="60" cy="26" rx="9" ry="12"/><ellipse cx="76" cy="42" rx="9" ry="12"/></svg>
+  <h1>Diario Canino</h1>
+  <p>La vida completa de tu perro en un solo lugar: vacunas, salud, ánimo, baños, peso y fotos. Compártela con tu familia en modo solo lectura.</p>
+ </section>
+ <div class="authbox">
+  <form id="fAuth">
+   <div class="tabs"><button type="button" class="on" data-tab="in">Entrar</button><button type="button" data-tab="up">Crear cuenta</button></div>
+   <label>Correo<input class="f" type="email" id="aEmail" autocomplete="username" required></label>
+   <label>Contraseña<input class="f" type="password" id="aPass" autocomplete="current-password" minlength="6" required></label>
+   <label id="aPass2Wrap" class="hide">Repite la contraseña<input class="f" type="password" id="aPass2" autocomplete="new-password" minlength="6"></label>
+   <button class="btn pri" id="aGo">Entrar</button>
+   <button type="button" class="linkbtn" id="aReset">Olvidé mi contraseña</button>
+  </form>
+ </div>
+</div>
+
+<!-- MIS PERROS -->
+<div id="vList" class="hide">
+ <header class="hero band">
+  <div class="wrap">
+   <div class="toprow"><span class="brand">Diario Canino</span><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="tag" id="who"></span><button class="btn glass" data-logout>Salir</button></div></div>
+   <h1 style="position:relative;z-index:1">Mis perros</h1>
+   <p class="sub" style="position:relative;z-index:1;margin-bottom:0">Toca un perro para ver y llevar su historia.</p>
+  </div>
+ </header>
+ <main class="band"><div class="wrap"><div class="dogs" id="dogs"></div></div></main>
+</div>
+
+<!-- NO DISPONIBLE -->
+<div id="vMissing" class="center hide"><div><h1 style="font-size:36px;margin-bottom:12px">Este perfil no está disponible</h1><p style="color:var(--soft);max-width:40ch;margin:0 auto 20px">El dueño dejó de compartirlo o el link no es correcto.</p><a class="btn pri" href="./" style="display:inline-flex;align-items:center;text-decoration:none">Ir a Diario Canino</a></div></div>
+
+<!-- PERRO -->
+<div id="vDog" class="hide">
+<header class="hero band">
+ <div class="wrap">
+  <div class="toprow"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn glass hide" id="backBtn">← Mis perros</button><span class="tag" id="mode"></span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn light hide" id="editProfile">Editar ficha</button></div></div>
+  <div class="hgrid">
+   <div class="seal" id="seal"></div>
+   <div>
+    <h1 id="name"></h1>
+    <p class="sub" id="subline"></p>
+    <div class="vitals" id="vitals"></div>
+   </div>
+  </div>
+  <nav class="nav"><a href="#historia">Historia</a><a href="#vacunas">Vacunas</a><a href="#fotos">Fotos</a><a href="#ficha">Ficha</a></nav>
+ </div>
+</header>
+
+<section class="band hide" id="quickBand" style="padding-bottom:0">
+ <div class="wrap"><h2 style="font-size:22px;margin-bottom:12px">Registrar algo de hoy</h2><div class="quick" id="quick"></div></div>
+</section>
+
+<main class="band">
+ <div class="wrap main">
+  <section id="historia">
+   <h2 style="font-size:26px;margin-bottom:14px">Su historia</h2>
+   <div class="chips" id="chips"></div>
+   <input class="search" id="q" type="search" placeholder="Buscar en el historial (vacuna, veterinario, nota…)">
+   <div id="tl"></div>
+  </section>
+  <aside class="side">
+   <div class="card hide" id="shareCard"><h2>Compartir con la familia</h2><div class="share">
+    <label class="switch"><input type="checkbox" id="shareOn"> Link de solo lectura activo</label>
+    <div id="shareBox" class="hide"><div class="copyrow"><input class="f" id="shareUrl" readonly><button class="btn pri" id="copyBtn">Copiar</button></div>
+    <p class="note" style="margin-top:8px">Quien abra este link ve todo sin cuenta y sin poder modificar nada. Desactívalo cuando quieras.</p></div>
+   </div></div>
+   <div class="card"><h2>Próximos pendientes</h2><div id="upcoming"></div></div>
+   <div class="card"><h2>Ánimo, últimos 30 días</h2><div class="moods" id="moods"></div><div class="legend" id="moodLegend"></div></div>
+   <div class="card"><h2>Peso</h2><div class="fig"><svg id="wchart"></svg></div><p class="note" id="wnote"></p></div>
+   <div class="card" id="ficha"><h2>Ficha</h2><dl id="fichaDl"></dl></div>
+  </aside>
+ </div>
+</main>
+
+<section class="band alt" id="vacunas">
+ <div class="wrap">
+  <div class="shead"><h2>Historial de vacunas</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost hide" id="verCarnet">Ver carnet</button><button class="btn pri hide" data-new="vacuna" id="addVac">Agregar vacuna</button></div></div>
+  <div class="vsum" id="vsum"></div>
+  <div id="vtable"></div>
+ </div>
+</section>
+
+<section class="band" id="fotos">
+ <div class="wrap">
+  <div class="shead"><h2>Registro fotográfico</h2><button class="btn pri hide" id="addFoto">Subir foto</button></div>
+  <div class="gal" id="gal"></div>
+ </div>
+</section>
+</div>
+
+<div id="vLoading" class="center"><p style="color:var(--soft)">Cargando…</p></div>
+
+<dialog id="dEntry"><form class="dlg" id="fEntry">
+ <h2 id="dTitle">Nuevo registro</h2>
+ <label>Tipo<select class="f" id="eTipo"></select></label>
+ <div class="row2"><label>Fecha<input class="f" type="date" id="eFecha" required></label><label>Hora (opcional)<input class="f" type="time" id="eHora"></label></div>
+ <div id="eAnimoWrap"><label style="margin-bottom:6px">¿Cómo está?</label><div class="moodpick" id="eAnimo"></div></div>
+ <label id="eTitWrap"><span id="eTitLbl">Detalle</span><input class="f" id="eTitulo" maxlength="120"></label>
+ <label id="ePesoWrap">Peso (kg)<input class="f" type="number" step="0.1" min="0" id="ePeso"></label>
+ <div class="row2" id="eExtra"><label>Veterinario / lugar<input class="f" id="eVet" maxlength="80"></label><label>Costo (COP)<input class="f" type="number" min="0" step="100" id="eCosto"></label></div>
+ <label id="eProxWrap"><span id="eProxLbl">Próxima dosis</span><input class="f" type="date" id="eProx"></label>
+ <label>Notas<textarea class="f" id="eNota" maxlength="2000"></textarea></label>
+ <label>Foto (opcional)<input class="f" type="file" accept="image/*" id="eFoto"></label>
+ <img id="ePrev" class="hide" style="max-width:160px;border-radius:12px" alt="">
+ <div class="dfoot"><button type="button" class="btn ghost" data-close>Cancelar</button><button class="btn pri" id="eSave">Guardar</button></div>
+</form></dialog>
+
+<dialog id="dProf"><form class="dlg" id="fProf">
+ <h2 id="pTitle">Ficha</h2>
+ <div class="row2"><label>Nombre<input class="f" id="pNombre" required maxlength="40"></label><label>Raza<input class="f" id="pRaza" maxlength="60"></label></div>
+ <div class="row2"><label>Fecha de nacimiento<input class="f" type="date" id="pNac"></label><label>Sexo<select class="f" id="pSexo"><option>Hembra</option><option>Macho</option></select></label></div>
+ <div class="row2"><label>Color<input class="f" id="pColor"></label><label>Esterilizado/a<select class="f" id="pEst"><option value="">Sin dato</option><option>Sí</option><option>No</option></select></label></div>
+ <div class="row2"><label>Microchip<input class="f" id="pChip"></label><label>Fecha de llegada a casa<input class="f" type="date" id="pLlegada"></label></div>
+ <div class="row2"><label>Veterinario de cabecera<input class="f" id="pVet"></label><label>Teléfono veterinario<input class="f" id="pTel"></label></div>
+ <div class="row2"><label>Comida habitual<input class="f" id="pComida"></label><label>Criador / procedencia<input class="f" id="pCriador"></label></div>
+ <label>Alergias o cuidados especiales<input class="f" id="pAlerg"></label>
+ <label>Notas<textarea class="f" id="pNotas"></textarea></label>
+ <label>Foto de perfil<input class="f" type="file" accept="image/*" id="pFoto"></label>
+ <div class="dfoot"><button type="button" class="btn danger hide" id="pDelete" style="margin-right:auto">Eliminar perro</button><button type="button" class="btn ghost" data-close>Cancelar</button><button class="btn pri" id="pSave">Guardar</button></div>
+</form></dialog>
+
+<dialog id="dConfirm"><div class="dlg"><h2 id="cTitle"></h2><p id="cTxt" style="margin:0"></p><div class="dfoot"><button class="btn ghost" data-close>No</button><button class="btn danger" id="cOk">Sí, borrar</button></div></div></dialog>
+
+<dialog id="dFoto"><form class="dlg" id="fFoto">
+ <h2>Nueva foto</h2>
+ <label>Foto<input class="f" type="file" accept="image/*" id="gFile" required></label>
+ <img id="gPrev" class="hide" style="max-width:200px;border-radius:12px" alt="">
+ <label>Descripción<input class="f" id="gCap" maxlength="120" placeholder="Ej: Primer día en casa"></label>
+ <label>Fecha<input class="f" type="date" id="gFecha" required></label>
+ <div class="dfoot"><button type="button" class="btn ghost" data-close>Cancelar</button><button class="btn pri" id="gSave">Guardar foto</button></div>
+</form></dialog>
+
+<dialog id="dLight"><div class="dlg"><img id="lImg" alt=""><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><b id="lCap"></b><div id="lDate" style="color:var(--soft);font-size:14px"></div></div><div class="dfoot"><button class="btn danger hide" id="lDel">Borrar foto</button><button class="btn ghost" data-close>Cerrar</button></div></div></div></dialog>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,collection,doc,setDoc,deleteDoc,getDoc,getDocs,onSnapshot,writeBatch,query,where} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {firebaseConfig,IMPORTAR_GALA_PARA} from "./config.js";
+{
+const T={
+ vacuna:{l:'Vacuna',c:'#2f9e44',tit:'Vacuna aplicada',prox:'Próximo refuerzo',ex:1},
+ desparasitacion:{l:'Desparasitación',c:'#7048e8',tit:'Producto',prox:'Próxima desparasitación',ex:1},
+ veterinario:{l:'Veterinario',c:'#1c7ed6',tit:'Motivo de la visita',prox:'Próximo control',ex:1},
+ medicamento:{l:'Medicamento',c:'#e8590c',tit:'Medicamento y dosis',prox:'Termina / revisar el',ex:1},
+ salud:{l:'Síntoma',c:'#d6336c',tit:'¿Qué notaste?'},
+ animo:{l:'Ánimo',c:'#f59f00',tit:'Detalle (opcional)'},
+ bano:{l:'Baño',c:'#15aabf',tit:'Producto o peluquería (opcional)',ex:1},
+ peso:{l:'Peso',c:'#495057',tit:'Detalle (opcional)'},
+ comida:{l:'Comida',c:'#a9732b',tit:'Qué comió o cambio de comida'},
+ paseo:{l:'Paseo / juego',c:'#37b24d',tit:'Dónde o qué hicieron'},
+ celo:{l:'Celo',c:'#e64980',tit:'Detalle (opcional)'},
+ momento:{l:'Momento especial',c:'#ff8fb1',tit:'¿Qué pasó?'}
+};
+const MOOD={feliz:{l:'Feliz',c:'#40c057'},juguetona:{l:'Juguetón/a',c:'#fab005'},tranquila:{l:'Tranquilo/a',c:'#4dabf7'},cansada:{l:'Cansado/a',c:'#adb5bd'},triste:{l:'Triste',c:'#7950f2'},enferma:{l:'Enfermo/a',c:'#e03131'}};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>ymd(new Date());
+const pd=s=>{const [y,m,d]=String(s).split('-').map(Number);return new Date(y,m-1,d)};
+const days=s=>Math.round((pd(today())-pd(s))/864e5);
+const fmt=s=>s?pd(s).toLocaleDateString('es-CO',{day:'numeric',month:'short',year:'numeric'}):'';
+const money=n=>'$'+Number(n).toLocaleString('es-CO');
+const toast=t=>{const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2600)};
+const paw='<svg viewBox="0 0 100 100" width="58%" fill="#ff8fb1"><ellipse cx="50" cy="66" rx="22" ry="18"/><ellipse cx="24" cy="42" rx="9" ry="12"/><ellipse cx="40" cy="26" rx="9" ry="12"/><ellipse cx="60" cy="26" rx="9" ry="12"/><ellipse cx="76" cy="42" rx="9" ry="12"/></svg>';
+const pic=src=>src?'<img alt="" src="'+esc(src)+'">':paw;
+
+const app=initializeApp(firebaseConfig),fs=getFirestore(app),auth=getAuth(app);
+let user=null,dogs=[],dogId=null,prof={},items=[],fotos=[],editable=false,unsubs=[],listUnsub=null;
+let filt='todos',editId=null,photo=null,pPhoto=null,mood='',lightId=null,gPhoto=null,confirmFn=null,profNew=false,authMode='in';
+
+function show(v){for(const id of ['vAuth','vList','vDog','vMissing','vLoading'])$(id).classList.toggle('hide',id!==v);window.scrollTo(0,0)}
+const nm=()=>prof.nombre||'Tu perro';
+
+/* ---------- edad ---------- */
+function ageParts(s){if(!s)return null;const b=pd(s),n=pd(today());if(n<b)return null;let m=(n.getFullYear()-b.getFullYear())*12+n.getMonth()-b.getMonth();if(n.getDate()<b.getDate())m--;const a=new Date(b.getFullYear(),b.getMonth()+m,b.getDate());return{m,d:Math.round((n-a)/864e5)}}
+const pl=(n,a,b)=>n+' '+(n===1?a:b);
+function age(s){const p=ageParts(s);if(!p)return '';const y=Math.floor(p.m/12),r=p.m%12,parts=[];if(y)parts.push(pl(y,'año','años'));if(r)parts.push(pl(r,'mes','meses'));if(p.d||!parts.length)parts.push(pl(p.d,'día','días'));return parts.length>1?parts.slice(0,-1).join(', ')+' y '+parts[parts.length-1]:parts[0]}
+const ago=n=>n===0?'hoy':n===1?'ayer':n<0?'en '+(-n)+' días':'hace '+n+' días';
+const lastOf=t=>items.find(i=>i.tipo===t);
+
+/* ---------- vista perro ---------- */
+function upcoming(){const seen=new Set(),out=[];
+ for(const i of items){if(!i.proxima||!T[i.tipo]?.prox)continue;const key=i.tipo+'|'+(i.titulo||'').toLowerCase();if(seen.has(key))continue;seen.add(key);out.push({fecha:i.proxima,label:(i.titulo||T[i.tipo].l),tipo:i.tipo})}
+ return out.sort((a,b)=>a.fecha<b.fecha?-1:1)}
+function renderHero(){
+ $('name').textContent=nm();
+ $('subline').textContent=[prof.raza,prof.sexo,prof.color].filter(Boolean).join(' · ');
+ $('seal').innerHTML=pic(prof.foto);
+ const w=items.find(i=>i.tipo==='peso'&&i.peso),b=lastOf('bano'),a=lastOf('animo'),nx=upcoming()[0],v=[];
+ if(ageParts(prof.nacimiento))v.push(['Edad',age(prof.nacimiento)]);else if(editable)v.push(['Edad','Falta fecha de nacimiento']);
+ if(w)v.push(['Peso',w.peso+' kg']);
+ v.push(['Último baño',b?ago(days(b.fecha)):'sin registro']);
+ if(a&&a.animo)v.push(['Último ánimo',MOOD[a.animo]?.l||a.animo]);
+ if(nx)v.push(['Próximo: '+nx.label,fmt(nx.fecha),days(nx.fecha)>=-7]);
+ $('vitals').innerHTML=v.map(x=>'<div class="vit'+(x[2]?' hot':'')+'"><b>'+esc(x[1])+'</b><span>'+esc(x[0])+'</span></div>').join('');
+}
+function renderUp(){const u=upcoming();
+ $('upcoming').innerHTML=u.length?u.map(x=>{const d=-days(x.fecha);const cls=d<0?'late':d<=14?'soon':'';return '<div class="up"><span><span class="dot" style="display:inline-block;background:'+T[x.tipo].c+';margin-right:8px"></span>'+esc(x.label)+'</span><span class="when '+cls+'">'+(d<0?'vencido · ':'')+fmt(x.fecha)+'</span></div>'}).join(''):'<p class="empty" style="padding:8px">Nada pendiente. Al registrar una vacuna o desparasitación con próxima fecha, aparece aquí.</p>'}
+function renderMoods(){const map={};for(const i of items)if(i.tipo==='animo'&&i.animo&&!map[i.fecha])map[i.fecha]=i.animo;
+ const cells=[],t=pd(today());
+ for(let k=29;k>=0;k--){const d=new Date(t);d.setDate(t.getDate()-k);const s=ymd(d),m=map[s];cells.push('<i title="'+fmt(s)+(m?': '+MOOD[m]?.l:'')+'"'+(m?' style="background:'+MOOD[m]?.c+'"':'')+'></i>')}
+ $('moods').innerHTML=cells.join('');
+ $('moodLegend').innerHTML=Object.values(MOOD).map(m=>'<span><span class="dot" style="background:'+m.c+'"></span>'+m.l+'</span>').join('')}
+const wsvg=$('wchart');
+function drawW(){
+ const pts=items.filter(i=>i.tipo==='peso'&&i.peso).map(i=>({f:i.fecha,p:+i.peso})).reverse();
+ const W=wsvg.clientWidth,H=wsvg.clientHeight;
+ if(!pts.length||!W){wsvg.innerHTML='';$('wnote').textContent='Registra el peso de vez en cuando para ver cómo crece.';return}
+ const ps=pts.map(x=>x.p),mn=Math.min(...ps),mx=Math.max(...ps),pad=(mx-mn)||1;
+ const X=i=>pts.length===1?W/2:24+i*(W-48)/(pts.length-1),Y=p=>H-28-(p-mn+pad*.15)/(pad*1.3)*(H-48);
+ const L=pts.length-1;
+ let s='<path d="'+pts.map((x,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(x.p).toFixed(1)).join('')+'" fill="none" stroke="#2f3fa0" stroke-width="3" stroke-linejoin="round"/>';
+ s+=pts.map((x,i)=>'<circle cx="'+X(i)+'" cy="'+Y(x.p)+'" r="5" fill="#ff8fb1" stroke="#2f3fa0" stroke-width="2"/>').join('');
+ s+='<text x="'+Math.min(X(L),W-30)+'" y="'+(Y(pts[L].p)-12)+'" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">'+pts[L].p+' kg</text>';
+ if(W>320&&L>0)s+='<text x="24" y="'+(H-6)+'" font-size="12" fill="currentColor" opacity=".6">'+fmt(pts[0].f)+'</text><text x="'+(W-24)+'" y="'+(H-6)+'" text-anchor="end" font-size="12" fill="currentColor" opacity=".6">'+fmt(pts[L].f)+'</text>';
+ wsvg.innerHTML=s;
+ const d=L>0?(pts[L].p-pts[0].p).toFixed(1):null;
+ $('wnote').textContent=d!==null?(d>=0?'Subió ':'Bajó ')+Math.abs(d)+' kg desde '+fmt(pts[0].f)+'.':'Un solo registro hasta ahora.'}
+const wro=new ResizeObserver(drawW);wro.observe(wsvg);
+function renderFicha(){
+ const f=[['Nacimiento',prof.nacimiento&&fmt(prof.nacimiento)],['Edad',prof.nacimiento&&age(prof.nacimiento)],['Llegó a casa',prof.llegada&&fmt(prof.llegada)],['Esterilizado/a',prof.esterilizada],['Microchip',prof.chip],['Veterinario',prof.vet],['Teléfono vet.',prof.tel],['Comida',prof.comida],['Alergias / cuidados',prof.alergias],['Procedencia',prof.criador],['Notas',prof.notas]].filter(x=>x[1]);
+ $('fichaDl').innerHTML=f.length?f.map(x=>'<dt>'+x[0]+'</dt><dd>'+esc(x[1])+'</dd>').join(''):'<dd style="grid-column:1/-1;color:var(--soft);font-weight:400">La ficha aún está vacía.</dd>'}
+function renderChips(){const used=new Set(items.map(i=>i.tipo));
+ const list=[['todos','Todo']].concat(Object.keys(T).filter(k=>used.has(k)).map(k=>[k,T[k].l]));
+ $('chips').innerHTML=list.map(c=>'<button class="chip'+(filt===c[0]?' on':'')+'" data-f="'+c[0]+'">'+c[1]+'</button>').join('')}
+function renderTL(){
+ const q=$('q').value.trim().toLowerCase();
+ const list=items.filter(i=>(filt==='todos'||i.tipo===filt)&&(!q||[T[i.tipo]?.l,i.titulo,i.nota,i.vet,MOOD[i.animo]?.l].join(' ').toLowerCase().includes(q)));
+ if(!list.length){$('tl').innerHTML='<div class="empty">'+(items.length?'Nada coincide con la búsqueda.':(editable?'Todavía no hay registros. Usa los botones de arriba para empezar su historia.':'Todavía no hay registros.'))+'</div>';return}
+ let html='',cur='';
+ for(const i of list){
+  const d=pd(i.fecha),mk=d.toLocaleDateString('es-CO',{month:'long',year:'numeric'});
+  if(mk!==cur){html+='<div class="month">'+mk+'</div>';cur=mk}
+  const t=T[i.tipo]||{l:i.tipo,c:'#868e96'},m=i.animo&&MOOD[i.animo];
+  const head=(m?m.l:'')+(i.tipo==='peso'&&i.peso?i.peso+' kg':'')+(i.titulo?(m||i.peso?' · ':'')+i.titulo:'')||t.l;
+  const extra=[i.hora,i.vet,i.costo?money(i.costo):'',i.proxima&&t.prox?t.prox+': '+fmt(i.proxima):''].filter(Boolean).join(' · ');
+  html+='<div class="ev"><div class="day">'+d.getDate()+'<small>'+d.toLocaleDateString('es-CO',{weekday:'short'})+'</small></div><div><h3><span class="k" style="background:'+(m?m.c:t.c)+'">'+t.l+'</span>'+esc(head)+'</h3>'+(extra?'<p>'+esc(extra)+'</p>':'')+(i.nota?'<p>'+esc(i.nota)+'</p>':'')+(i.foto?'<img loading="lazy" alt="" src="'+esc(i.foto)+'">':'')+'</div>'+(editable?'<div class="acts"><button class="ib" title="Editar" data-ed="'+esc(i.id)+'">✎</button><button class="ib" title="Borrar" data-del="'+esc(i.id)+'">✕</button></div>':'')+'</div>';
+ }
+ $('tl').innerHTML=html}
+function renderVac(){
+ const v=items.filter(i=>i.tipo==='vacuna').slice().sort((a,b)=>a.fecha<b.fecha?-1:a.fecha>b.fecha?1:(a.creado||0)-(b.creado||0));
+ const next=v.filter(i=>i.proxima).map(i=>i.proxima).sort().pop();
+ $('vsum').innerHTML='<div><b>'+v.length+'</b><span>dosis aplicadas</span></div><div><b>'+(v.length?esc(fmt(v[v.length-1].fecha)):'—')+'</b><span>última vacuna</span></div><div><b>'+(next?esc(fmt(next)):'Por definir')+'</b><span>próximo refuerzo</span></div>';
+ $('vtable').innerHTML=v.length?'<table class="stack"><thead><tr><th>#</th><th>Fecha</th><th>Vacuna</th><th>Detalle</th><th>Próximo refuerzo</th>'+(editable?'<th></th>':'')+'</tr></thead><tbody>'+v.map((i,k)=>'<tr><td class="n">'+(k+1)+'</td><td class="nw">'+esc(fmt(i.fecha))+'</td><td><span class="t">'+esc(i.titulo||'Vacuna')+'</span>'+(i.vet?'<div class="s">'+esc(i.vet)+'</div>':'')+'</td><td class="s">'+esc(i.nota||'')+'</td><td class="nw">'+(i.proxima?esc(fmt(i.proxima)):'<span class="s">Sin fecha</span>')+'</td>'+(editable?'<td><button class="ib" title="Editar" data-ed="'+esc(i.id)+'">✎</button></td>':'')+'</tr>').join('')+'</tbody></table>':'<div class="empty">Aún no hay vacunas registradas.</div>';
+ $('verCarnet').classList.toggle('hide',!fotos.some(f=>/carnet/i.test(f.titulo||'')));
+}
+function allPhotos(){
+ const a=fotos.map(f=>({id:f.id,src:f.src,cap:f.titulo||'',fecha:f.fecha||'',own:true}));
+ for(const i of items)if(i.foto)a.push({id:'r:'+i.id,src:i.foto,cap:(T[i.tipo]?.l||'')+(i.titulo?' · '+i.titulo:''),fecha:i.fecha,own:false});
+ return a.sort((x,y)=>x.fecha<y.fecha?1:x.fecha>y.fecha?-1:0)}
+function renderGal(){const a=allPhotos();
+ $('gal').innerHTML=a.length?a.map(p=>'<button class="ph" data-ph="'+esc(p.id)+'"><figure style="margin:0"><img loading="lazy" alt="'+esc(p.cap)+'" src="'+esc(p.src)+'"><figcaption><b>'+esc(p.cap||nm())+'</b><span>'+esc(fmt(p.fecha))+'</span></figcaption></figure></button>').join(''):'<div class="empty" style="grid-column:1/-1">Todavía no hay fotos.</div>'}
+function renderShare(){
+ $('shareCard').classList.toggle('hide',!editable);if(!editable)return;
+ $('shareOn').checked=!!prof.compartido;$('shareBox').classList.toggle('hide',!prof.compartido);
+ $('shareUrl').value=location.origin+location.pathname+'?perro='+dogId}
+function renderDog(){
+ document.title=nm()+' · Diario Canino';
+ renderHero();renderUp();renderMoods();drawW();renderFicha();renderChips();renderTL();renderVac();renderGal();renderShare();
+ $('mode').textContent=editable?'Tú puedes editar':'Solo lectura';
+ $('backBtn').classList.toggle('hide',!user);
+ for(const id of ['quickBand','editProfile','addVac','addFoto'])$(id).classList.toggle('hide',!editable);
+}
+
+/* ---------- mis perros ---------- */
+function renderList(){
+ $('who').textContent=user?.email||'';
+ const s=dogs.slice().sort((a,b)=>(a.creado||0)-(b.creado||0));
+ $('dogs').innerHTML=s.map(d=>'<button class="dog" data-open="'+esc(d.id)+'"><div class="av">'+pic(d.foto)+'</div><div><h3>'+esc(d.nombre||'Sin nombre')+'</h3><p>'+esc([d.raza,d.nacimiento?age(d.nacimiento):''].filter(Boolean).join(' · '))+'</p></div></button>').join('')+'<button class="dog add" id="addDog"><div class="av" style="background:var(--card);border-style:dashed;border-color:var(--line)">'+paw+'</div><div><h3>Agregar perro</h3><p>Crea su ficha y empieza su historia</p></div></button>';
+}
+
+/* ---------- navegación ---------- */
+function stopDog(){for(const u of unsubs)u();unsubs=[];dogId=null;prof={};items=[];fotos=[]}
+function goList(push){stopDog();if(push)history.pushState(null,'',location.pathname);document.title='Diario Canino';
+ if(!user){show('vAuth');return}renderList();show('vList')}
+function openDog(id,push){
+ stopDog();dogId=id;filt='todos';$('q').value='';
+ if(push)history.pushState(null,'','?perro='+encodeURIComponent(id));
+ show('vLoading');
+ const timer=setTimeout(()=>toast('Los datos tardan en llegar…'),10000);
+ const base=doc(fs,'dogs',id);let first=true;
+ unsubs.push(onSnapshot(base,s=>{clearTimeout(timer);
+  if(!s.exists()){show('vMissing');return}
+  prof={...s.data()};editable=!!user&&prof.owner===user.uid;
+  renderDog();if(first){first=false;show('vDog');if(location.hash)document.querySelector(location.hash)?.scrollIntoView()}
+ },e=>{clearTimeout(timer);show('vMissing')}));
+ unsubs.push(onSnapshot(collection(base,'registros'),s=>{items=s.docs.map(x=>({id:x.id,...x.data()})).sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:(b.creado||0)-(a.creado||0));if(dogId===id&&prof.nombre!==undefined)renderDog()},()=>{}));
+ unsubs.push(onSnapshot(collection(base,'fotos'),s=>{fotos=s.docs.map(x=>({id:x.id,...x.data()}));if(dogId===id&&prof.nombre!==undefined)renderDog()},()=>{}));
+}
+function route(){const id=new URLSearchParams(location.search).get('perro');if(id)openDog(id,false);else goList(false)}
+addEventListener('popstate',route);
+
+/* ---------- auth ---------- */
+let authReady=false;
+onAuthStateChanged(auth,async u=>{
+ user=u;if(listUnsub){listUnsub();listUnsub=null}dogs=[];
+ if(u){
+  listUnsub=onSnapshot(query(collection(fs,'dogs'),where('owner','==',u.uid)),async s=>{dogs=s.docs.map(x=>({id:x.id,...x.data()}));
+   if(!s.metadata.fromCache&&!dogs.length)await importGala();
+   if(!$('vList').classList.contains('hide'))renderList()},e=>toast('No se pudieron cargar tus perros'));
+ }
+ if(!authReady){authReady=true;route()}
+ else{const id=new URLSearchParams(location.search).get('perro');if(id)openDog(id,false);else goList(false)}
+});
+function setTab(m){authMode=m;for(const b of document.querySelectorAll('[data-tab]'))b.classList.toggle('on',b.dataset.tab===m);
+ $('aPass2Wrap').classList.toggle('hide',m!=='up');$('aPass2').required=m==='up';$('aGo').textContent=m==='up'?'Crear cuenta':'Entrar';
+ $('aPass').autocomplete=m==='up'?'new-password':'current-password';$('aReset').classList.toggle('hide',m==='up')}
+const authErr=c=>({'auth/email-already-in-use':'Ese correo ya tiene cuenta. Entra con él.','auth/invalid-email':'El correo no es válido.','auth/weak-password':'La contraseña debe tener al menos 6 caracteres.','auth/too-many-requests':'Demasiados intentos. Espera unos minutos.'}[c]||'Correo o contraseña incorrectos.');
+$('fAuth').addEventListener('submit',async e=>{e.preventDefault();const em=$('aEmail').value.trim(),pw=$('aPass').value;
+ if(authMode==='up'&&pw!==$('aPass2').value){toast('Las contraseñas no coinciden');return}
+ $('aGo').disabled=true;
+ try{if(authMode==='up'){await createUserWithEmailAndPassword(auth,em,pw);toast('Cuenta creada. Agrega tu primer perro.')}else await signInWithEmailAndPassword(auth,em,pw)}
+ catch(err){toast(authErr(err.code))}
+ $('aGo').disabled=false});
+$('aReset').addEventListener('click',async()=>{const em=$('aEmail').value.trim();if(!em){toast('Escribe tu correo primero');return}
+ try{await sendPasswordResetEmail(auth,em);toast('Te enviamos un correo para cambiar la contraseña')}catch{toast('No se pudo enviar el correo')}});
+
+/* ---------- importar a Gala ---------- */
+async function importGala(){
+ if(!user||!IMPORTAR_GALA_PARA||(user.email||'').toLowerCase()!==IMPORTAR_GALA_PARA.toLowerCase())return;
+ try{const flag=doc(fs,'users',user.uid);const f=await getDoc(flag);if(f.exists()&&f.data().galaImportada)return;
+  const dref=doc(collection(fs,'dogs'));
+  await setDoc(dref,{owner:user.uid,compartido:false,creado:Date.now(),nombre:'Gala',raza:'American Bully',sexo:'Hembra',nacimiento:'2026-10-01',foto:'gala.jpg'});
+  const b=writeBatch(fs),R=(id,d)=>b.set(doc(dref,'registros',id),d),F=(id,d)=>b.set(doc(dref,'fotos',id),d);
+  R('vac-20261029',{tipo:'vacuna',fecha:'2026-10-29',hora:'',titulo:'Vencothree Puppy (Dechra)',nota:'Contra moquillo, parvovirosis y coronavirosis canina. Lote 005/25, vence abr/27.',vet:'',creado:1793250000000});
+  R('vac-20261119',{tipo:'vacuna',fecha:'2026-11-19',hora:'',titulo:'Procyon Dog DA2PPvL (MSD)',nota:'Contra moquillo, hepatitis, parvovirosis, parainfluenza y leptospira. Lote 02131847A, vence 21-jul-2027. Fecha de revacunación en blanco en el carnet.',vet:'',creado:1795050000000});
+  R('peso-20261122',{tipo:'peso',fecha:'2026-11-22',hora:'',titulo:'',nota:'',peso:6,creado:1795400000000});
+  F('carnet-vacunas',{src:'carnet-vacunas.jpg',titulo:'Carnet de vacunas',fecha:'2026-11-22',creado:1795381500000});
+  F('perfil-carro',{src:'gala.jpg',titulo:'Gala de paseo en el carro',fecha:'2026-11-22',creado:1795381400000});
+  b.set(flag,{galaImportada:true},{merge:true});
+  await b.commit();toast('Importamos a Gala con su historial')}catch(e){console.warn(e)}
+}
+
+/* ---------- formularios ---------- */
+$('quick').innerHTML=Object.entries(T).map(([k,t])=>'<button class="qb" data-new="'+k+'"><span class="dot" style="background:'+t.c+'"></span>'+t.l+'</button>').join('');
+$('eTipo').innerHTML=Object.entries(T).map(([k,t])=>'<option value="'+k+'">'+t.l+'</option>').join('');
+$('eAnimo').innerHTML=Object.entries(MOOD).map(([k,m])=>'<button type="button" data-m="'+k+'">'+m.l+'</button>').join('');
+function setMood(k){mood=k;for(const b of $('eAnimo').children){const on=b.dataset.m===k;b.classList.toggle('on',on);b.style.background=on?MOOD[b.dataset.m].c:'';b.style.borderColor=on?MOOD[b.dataset.m].c:''}}
+function shape(){const k=$('eTipo').value,t=T[k];
+ $('eAnimoWrap').classList.toggle('hide',k!=='animo');$('ePesoWrap').classList.toggle('hide',k!=='peso');
+ $('eExtra').classList.toggle('hide',!t.ex);$('eProxWrap').classList.toggle('hide',!t.prox);
+ $('eTitLbl').textContent=t.tit;if(t.prox)$('eProxLbl').textContent=t.prox}
+function openEntry(k,it){
+ editId=it?it.id:null;photo=it?.foto||null;
+ $('dTitle').textContent=it?'Editar registro':'Nuevo registro';
+ $('eTipo').value=it?.tipo||k;$('eFecha').value=it?.fecha||today();$('eHora').value=it?.hora||'';
+ $('eTitulo').value=it?.titulo||'';$('ePeso').value=it?.peso||'';$('eVet').value=it?.vet||'';$('eCosto').value=it?.costo||'';
+ $('eProx').value=it?.proxima||'';$('eNota').value=it?.nota||'';$('eFoto').value='';
+ $('ePrev').src=photo||'';$('ePrev').classList.toggle('hide',!photo);
+ setMood(it?.animo||'');shape();$('dEntry').showModal()}
+function shrink(file,max){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.72))};im.onerror=rej;im.src=r.result};r.onerror=rej;r.readAsDataURL(file)})}
+function refused(e){toast(e?.code==='permission-denied'?'No tienes permiso para editar':'No se pudo guardar, intenta de nuevo')}
+function ask(title,txt,fn){$('cTitle').textContent=title;$('cTxt').textContent=txt;confirmFn=fn;$('dConfirm').showModal()}
+function openLight(id){const p=allPhotos().find(x=>x.id===id);if(!p)return;lightId=p.own?p.id:null;$('lImg').src=p.src;$('lImg').alt=p.cap;$('lCap').textContent=p.cap||nm();$('lDate').textContent=fmt(p.fecha);$('lDel').classList.toggle('hide',!(editable&&p.own));$('dLight').showModal()}
+const PF={pNombre:'nombre',pRaza:'raza',pNac:'nacimiento',pSexo:'sexo',pColor:'color',pEst:'esterilizada',pChip:'chip',pLlegada:'llegada',pVet:'vet',pTel:'tel',pComida:'comida',pCriador:'criador',pAlerg:'alergias',pNotas:'notas'};
+function openProf(isNew){profNew=isNew;const src=isNew?{}:prof;
+ for(const [id,k] of Object.entries(PF))$(id).value=src[k]||(k==='sexo'?'Hembra':'');
+ $('pFoto').value='';pPhoto=null;$('pTitle').textContent=isNew?'Nuevo perro':'Ficha de '+nm();$('pSave').textContent=isNew?'Crear perro':'Guardar ficha';
+ $('pDelete').classList.toggle('hide',isNew);$('dProf').showModal()}
+
+document.addEventListener('click',e=>{
+ const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.new)openEntry(b.dataset.new);
+ else if(b.dataset.f){filt=b.dataset.f;renderChips();renderTL()}
+ else if(b.dataset.ed)openEntry(null,items.find(i=>i.id===b.dataset.ed));
+ else if(b.dataset.del){const it=items.find(i=>i.id===b.dataset.del);if(!it)return;const id=it.id;
+  ask('¿Borrar este registro?',(T[it.tipo]?.l||'')+' del '+fmt(it.fecha)+(it.titulo?' — '+it.titulo:''),async()=>{try{await deleteDoc(doc(fs,'dogs',dogId,'registros',id));toast('Borrado')}catch(err){refused(err)}})}
+ else if(b.dataset.m)setMood(b.dataset.m);
+ else if(b.dataset.ph)openLight(b.dataset.ph);
+ else if(b.dataset.open)openDog(b.dataset.open,true);
+ else if(b.dataset.tab)setTab(b.dataset.tab);
+ else if(b.id==='addDog')openProf(true);
+ else if(b.hasAttribute('data-logout'))signOut(auth);
+ else if(b.hasAttribute('data-close'))b.closest('dialog').close();
+});
+$('backBtn').addEventListener('click',()=>goList(true));
+$('cOk').addEventListener('click',async()=>{$('dConfirm').close();const f=confirmFn;confirmFn=null;if(f)await f()});
+$('eTipo').addEventListener('change',shape);
+$('q').addEventListener('input',renderTL);
+$('eFoto').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{photo=await shrink(f,900);$('ePrev').src=photo;$('ePrev').classList.remove('hide')}catch{toast('No se pudo leer la foto')}});
+$('pFoto').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{pPhoto=await shrink(f,600)}catch{toast('No se pudo leer la foto')}});
+$('gFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{gPhoto=await shrink(f,1200);$('gPrev').src=gPhoto;$('gPrev').classList.remove('hide')}catch{toast('No se pudo leer la foto')}});
+$('fEntry').addEventListener('submit',async e=>{e.preventDefault();if(!dogId)return;
+ const k=$('eTipo').value,t=T[k];
+ if(k==='animo'&&!mood){toast('Elige cómo está');return}
+ const d={tipo:k,fecha:$('eFecha').value,hora:$('eHora').value,titulo:$('eTitulo').value.trim(),nota:$('eNota').value.trim(),creado:Date.now()};
+ if(k==='animo')d.animo=mood;if(k==='peso'&&$('ePeso').value)d.peso=+$('ePeso').value;
+ if(t.ex){d.vet=$('eVet').value.trim();if($('eCosto').value)d.costo=+$('eCosto').value}
+ if(t.prox&&$('eProx').value)d.proxima=$('eProx').value;
+ if(photo)d.foto=photo;
+ const old=editId&&items.find(i=>i.id===editId);if(old)d.creado=old.creado||d.creado;
+ $('eSave').disabled=true;
+ try{const col=collection(fs,'dogs',dogId,'registros');await setDoc(editId?doc(col,editId):doc(col),d);$('dEntry').close();toast('Guardado')}catch(err){refused(err)}
+ $('eSave').disabled=false});
+$('editProfile').addEventListener('click',()=>openProf(false));
+$('fProf').addEventListener('submit',async e=>{e.preventDefault();if(!user)return;const d={};
+ for(const [id,k] of Object.entries(PF)){const v=$(id).value.trim();if(v)d[k]=v}
+ const base=profNew?{}:prof;if(pPhoto||base.foto)d.foto=pPhoto||base.foto;
+ $('pSave').disabled=true;
+ try{if(profNew){const ref=doc(collection(fs,'dogs'));await setDoc(ref,{...d,owner:user.uid,compartido:false,creado:Date.now()});$('dProf').close();openDog(ref.id,true);toast('Perro creado')}
+  else{await setDoc(doc(fs,'dogs',dogId),{...d,owner:prof.owner,compartido:!!prof.compartido,creado:prof.creado||Date.now()});$('dProf').close();toast('Ficha guardada')}}
+ catch(err){refused(err)}
+ $('pSave').disabled=false});
+$('pDelete').addEventListener('click',()=>{$('dProf').close();const id=dogId,n=nm();
+ ask('¿Eliminar a '+n+'?','Se borra su ficha, todo su historial y sus fotos. No se puede deshacer.',async()=>{
+  try{const base=doc(fs,'dogs',id);for(const sub of ['registros','fotos']){const s=await getDocs(collection(base,sub));for(const x of s.docs)await deleteDoc(x.ref)}
+   await deleteDoc(base);goList(true);toast(n+' fue eliminado')}catch(err){refused(err)}})});
+$('shareOn').addEventListener('change',async e=>{const on=e.target.checked;
+ try{await setDoc(doc(fs,'dogs',dogId),{compartido:on},{merge:true});toast(on?'Link activado':'Link desactivado')}catch(err){e.target.checked=!on;refused(err)}});
+$('copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('shareUrl').value);toast('Link copiado')}catch{$('shareUrl').select();toast('Selecciónalo y cópialo')}});
+$('verCarnet').addEventListener('click',()=>{const c=fotos.find(f=>/carnet/i.test(f.titulo||''));if(c)openLight(c.id)});
+$('addFoto').addEventListener('click',()=>{gPhoto=null;$('fFoto').reset();$('gPrev').classList.add('hide');$('gFecha').value=today();$('dFoto').showModal()});
+$('fFoto').addEventListener('submit',async e=>{e.preventDefault();if(!dogId||!gPhoto)return;$('gSave').disabled=true;
+ try{await setDoc(doc(collection(fs,'dogs',dogId,'fotos')),{src:gPhoto,titulo:$('gCap').value.trim(),fecha:$('gFecha').value,creado:Date.now()});$('dFoto').close();toast('Foto guardada')}catch(err){refused(err)}
+ $('gSave').disabled=false});
+$('lDel').addEventListener('click',()=>{if(!lightId)return;const id=lightId;$('dLight').close();
+ ask('¿Borrar esta foto?','La foto se elimina del registro fotográfico.',async()=>{try{await deleteDoc(doc(fs,'dogs',dogId,'fotos',id));toast('Foto borrada')}catch(err){refused(err)}})});
+}
+</script>
+</body>
+</html>
