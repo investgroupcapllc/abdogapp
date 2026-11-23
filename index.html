@@ -8,11 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* VOICE: cálido, cariñoso, ordenado — la libreta de vida de cada perro
-   IDEA: el carnet veterinario de cada perro, con diario adjunto
-   PICTURE: portada con la foto del perro en un sello circular y sus datos vitales
-   COLOUR and TYPE: índigo profundo dominante, rosa collar de apoyo, amarillo acento; Fredoka + Nunito
-   LAYOUT: portada a todo ancho, registro rápido, historia + panel lateral, vacunas, fotos */
 :root{color-scheme:light dark;
 --bg:light-dark(#ffffff,#12142b);--ink:light-dark(#17193a,#eef0ff);--soft:light-dark(#5b5f86,#a9add6);
 --card:light-dark(#f4f4fb,#1c1f3d);--line:light-dark(#e2e3f0,#2c3058);
@@ -47,8 +42,10 @@ button{cursor:pointer}
 .btn.ghost{background:transparent;border:2px solid var(--line)}
 .btn.danger{background:#d6336c;color:#fff}
 .btn:disabled{opacity:.6}
-.quick{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
-.qb{display:flex;align-items:center;gap:10px;min-height:56px;padding:10px 14px;border-radius:16px;border:2px solid var(--line);background:var(--bg);font-weight:700;text-align:left}
+.quick{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.qb{display:flex;align-items:center;gap:10px;min-height:56px;padding:10px 12px;border-radius:16px;border:2px solid var(--line);background:var(--bg);font-weight:700;font-size:15px;line-height:1.2;text-align:left;overflow:hidden}
+.qb .lbl{flex:1;min-width:0;overflow-wrap:anywhere;hyphens:auto}
+@media(max-width:400px){.quick{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .qb:hover{border-color:var(--ind)}
 .dot{flex:none;width:14px;height:14px;border-radius:50%}
 .main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px;align-items:start}
@@ -123,7 +120,6 @@ td .t{font-weight:700}td .s{color:var(--soft);font-size:14px}
 .ph figcaption span{color:var(--soft);font-size:13px}
 #dLight{width:min(980px,calc(100vw - 24px))}
 #dLight img{width:100%;max-height:72vh;object-fit:contain;background:#000;border-radius:14px}
-/* auth + list */
 .auth{min-height:100vh;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
 .auth .hero{display:flex;flex-direction:column;justify-content:center;gap:18px}
 .auth .hero h1{font-size:clamp(40px,6vw,60px)}
@@ -156,7 +152,6 @@ table{font-size:14px}.stack thead{display:none}.stack tr{display:grid;padding-bl
 </head>
 <body>
 
-<!-- ACCESO -->
 <div id="vAuth" class="auth hide">
  <section class="hero band">
   <svg class="bigpaw" viewBox="0 0 100 100" fill="#ff8fb1" aria-hidden="true"><ellipse cx="50" cy="66" rx="22" ry="18"/><ellipse cx="24" cy="42" rx="9" ry="12"/><ellipse cx="40" cy="26" rx="9" ry="12"/><ellipse cx="60" cy="26" rx="9" ry="12"/><ellipse cx="76" cy="42" rx="9" ry="12"/></svg>
@@ -175,7 +170,6 @@ table{font-size:14px}.stack thead{display:none}.stack tr{display:grid;padding-bl
  </div>
 </div>
 
-<!-- MIS PERROS -->
 <div id="vList" class="hide">
  <header class="hero band">
   <div class="wrap">
@@ -187,10 +181,8 @@ table{font-size:14px}.stack thead{display:none}.stack tr{display:grid;padding-bl
  <main class="band"><div class="wrap"><div class="dogs" id="dogs"></div></div></main>
 </div>
 
-<!-- NO DISPONIBLE -->
 <div id="vMissing" class="center hide"><div><h1 style="font-size:36px;margin-bottom:12px">Este perfil no está disponible</h1><p style="color:var(--soft);max-width:40ch;margin:0 auto 20px">El dueño dejó de compartirlo o el link no es correcto.</p><a class="btn pri" href="./" style="display:inline-flex;align-items:center;text-decoration:none">Ir a Diario Canino</a></div></div>
 
-<!-- PERRO -->
 <div id="vDog" class="hide">
 <header class="hero band">
  <div class="wrap">
@@ -335,14 +327,12 @@ let filt='todos',editId=null,photo=null,pPhoto=null,mood='',lightId=null,gPhoto=
 function show(v){for(const id of ['vAuth','vList','vDog','vMissing','vLoading'])$(id).classList.toggle('hide',id!==v);window.scrollTo(0,0)}
 const nm=()=>prof.nombre||'Tu perro';
 
-/* ---------- edad ---------- */
 function ageParts(s){if(!s)return null;const b=pd(s),n=pd(today());if(n<b)return null;let m=(n.getFullYear()-b.getFullYear())*12+n.getMonth()-b.getMonth();if(n.getDate()<b.getDate())m--;const a=new Date(b.getFullYear(),b.getMonth()+m,b.getDate());return{m,d:Math.round((n-a)/864e5)}}
 const pl=(n,a,b)=>n+' '+(n===1?a:b);
 function age(s){const p=ageParts(s);if(!p)return '';const y=Math.floor(p.m/12),r=p.m%12,parts=[];if(y)parts.push(pl(y,'año','años'));if(r)parts.push(pl(r,'mes','meses'));if(p.d||!parts.length)parts.push(pl(p.d,'día','días'));return parts.length>1?parts.slice(0,-1).join(', ')+' y '+parts[parts.length-1]:parts[0]}
 const ago=n=>n===0?'hoy':n===1?'ayer':n<0?'en '+(-n)+' días':'hace '+n+' días';
 const lastOf=t=>items.find(i=>i.tipo===t);
 
-/* ---------- vista perro ---------- */
 function upcoming(){const seen=new Set(),out=[];
  for(const i of items){if(!i.proxima||!T[i.tipo]?.prox)continue;const key=i.tipo+'|'+(i.titulo||'').toLowerCase();if(seen.has(key))continue;seen.add(key);out.push({fecha:i.proxima,label:(i.titulo||T[i.tipo].l),tipo:i.tipo})}
  return out.sort((a,b)=>a.fecha<b.fecha?-1:1)}
@@ -426,14 +416,12 @@ function renderDog(){
  for(const id of ['quickBand','editProfile','addVac','addFoto'])$(id).classList.toggle('hide',!editable);
 }
 
-/* ---------- mis perros ---------- */
 function renderList(){
  $('who').textContent=user?.email||'';
  const s=dogs.slice().sort((a,b)=>(a.creado||0)-(b.creado||0));
  $('dogs').innerHTML=s.map(d=>'<button class="dog" data-open="'+esc(d.id)+'"><div class="av">'+pic(d.foto)+'</div><div><h3>'+esc(d.nombre||'Sin nombre')+'</h3><p>'+esc([d.raza,d.nacimiento?age(d.nacimiento):''].filter(Boolean).join(' · '))+'</p></div></button>').join('')+'<button class="dog add" id="addDog"><div class="av" style="background:var(--card);border-style:dashed;border-color:var(--line)">'+paw+'</div><div><h3>Agregar perro</h3><p>Crea su ficha y empieza su historia</p></div></button>';
 }
 
-/* ---------- navegación ---------- */
 function stopDog(){for(const u of unsubs)u();unsubs=[];dogId=null;prof={};items=[];fotos=[]}
 function goList(push){stopDog();if(push)history.pushState(null,'',location.pathname);document.title='Diario Canino';
  if(!user){show('vAuth');return}renderList();show('vList')}
@@ -454,7 +442,6 @@ function openDog(id,push){
 function route(){const id=new URLSearchParams(location.search).get('perro');if(id)openDog(id,false);else goList(false)}
 addEventListener('popstate',route);
 
-/* ---------- auth ---------- */
 let authReady=false;
 onAuthStateChanged(auth,async u=>{
  user=u;if(listUnsub){listUnsub();listUnsub=null}dogs=[];
@@ -479,7 +466,6 @@ $('fAuth').addEventListener('submit',async e=>{e.preventDefault();const em=$('aE
 $('aReset').addEventListener('click',async()=>{const em=$('aEmail').value.trim();if(!em){toast('Escribe tu correo primero');return}
  try{await sendPasswordResetEmail(auth,em);toast('Te enviamos un correo para cambiar la contraseña')}catch{toast('No se pudo enviar el correo')}});
 
-/* ---------- importar a Gala ---------- */
 async function importGala(){
  if(!user||!IMPORTAR_GALA_PARA||(user.email||'').toLowerCase()!==IMPORTAR_GALA_PARA.toLowerCase())return;
  try{const flag=doc(fs,'users',user.uid);const f=await getDoc(flag);if(f.exists()&&f.data().galaImportada)return;
@@ -495,8 +481,7 @@ async function importGala(){
   await b.commit();toast('Importamos a Gala con su historial')}catch(e){console.warn(e)}
 }
 
-/* ---------- formularios ---------- */
-$('quick').innerHTML=Object.entries(T).map(([k,t])=>'<button class="qb" data-new="'+k+'"><span class="dot" style="background:'+t.c+'"></span>'+t.l+'</button>').join('');
+$('quick').innerHTML=Object.entries(T).map(([k,t])=>'<button class="qb" data-new="'+k+'"><span class="dot" style="background:'+t.c+'"></span><span class="lbl">'+t.l+'</span></button>').join('');
 $('eTipo').innerHTML=Object.entries(T).map(([k,t])=>'<option value="'+k+'">'+t.l+'</option>').join('');
 $('eAnimo').innerHTML=Object.entries(MOOD).map(([k,m])=>'<button type="button" data-m="'+k+'">'+m.l+'</button>').join('');
 function setMood(k){mood=k;for(const b of $('eAnimo').children){const on=b.dataset.m===k;b.classList.toggle('on',on);b.style.background=on?MOOD[b.dataset.m].c:'';b.style.borderColor=on?MOOD[b.dataset.m].c:''}}
